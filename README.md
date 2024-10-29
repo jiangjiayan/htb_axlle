@@ -12,7 +12,7 @@ De nombreux ports ont été ouverts. Jetons un coup d'œil aux ports clés 80 et
 
 Port 80
 
-![nmap](./images/diesearch.png)
+![nmap](./images/dirsearch.png)
 
 Port 445
 
