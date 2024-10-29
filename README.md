@@ -24,10 +24,7 @@ J’ai remarqué le service SMTP sur le port 25 (en me référant à un rapport,
 
 ### Essayez d'abord d'envoyer un article à l'administrateur (le compte administrateur est affiché dans l'interface Web)
 
-`
-swaks --to accounts@axlle.htb --from test@test.test --header "Subject: 111" --body "just a test"  --attach test.txt
-
-`
+`swaks --to accounts@axlle.htb --from test@test.test --header "Subject: 111" --body "just a test"  --attach test.txt`
 ![nmap](./images/25.png)
 
 La vérification des informations montre que le fichier txt a été téléchargé sur le serveur de l'autre partie.
